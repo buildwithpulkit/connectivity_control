@@ -1,7 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-
-import 'connectivity_control_platform_interface.dart';
+import 'package:flutter/foundation.dart';
+import 'package:connectivity_control/src/platform_interface/connectivity_control_platform_interface.dart';
 
 /// An implementation of [ConnectivityControlPlatform] that uses method channels.
 class MethodChannelConnectivityControl extends ConnectivityControlPlatform {

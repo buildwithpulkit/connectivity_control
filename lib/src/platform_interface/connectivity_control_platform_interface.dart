@@ -1,6 +1,5 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
-import 'connectivity_control_method_channel.dart';
+import 'package:connectivity_control/src/method_channel/connectivity_control_method_channel.dart';
 
 abstract class ConnectivityControlPlatform extends PlatformInterface {
   /// Constructs a ConnectivityControlPlatform.

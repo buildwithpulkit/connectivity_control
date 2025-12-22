@@ -1,5 +1,4 @@
-
-import 'connectivity_control_platform_interface.dart';
+import 'package:connectivity_control/src/platform_interface/connectivity_control_platform_interface.dart';
 
 class ConnectivityControl {
   Future<String?> getPlatformVersion() {
