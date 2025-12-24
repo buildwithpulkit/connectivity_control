@@ -10,9 +10,9 @@ class MethodChannelConnectivityControl extends ConnectivityControlPlatform {
   );
 
   /// The event channel used to interact with the native platform.
-  // static const EventChannel _eventChannel = EventChannel(
-  //   'connectivity_control/events',
-  // );
+  static const EventChannel _eventChannel = EventChannel(
+    'connectivity_control/events',
+  );
 
   @override
   Future<String?> getPlatformVersion() async {
@@ -38,6 +38,15 @@ class MethodChannelConnectivityControl extends ConnectivityControlPlatform {
 
   @override
   Stream<List<NetworkInfo>> listenToActiveNetworks() {
-    return const Stream.empty();
+    return _eventChannel.receiveBroadcastStream().map((event) {
+      if (event == null) return <NetworkInfo>[];
+
+      final list = event as List<dynamic>;
+
+      return list
+          .cast<Map<dynamic, dynamic>>()
+          .map(NetworkInfo.fromMap)
+          .toList();
+    });
   }
 }

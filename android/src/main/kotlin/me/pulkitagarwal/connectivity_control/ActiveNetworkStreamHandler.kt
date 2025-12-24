@@ -1,5 +1,7 @@
 package me.pulkitagarwal.connectivity_control
 
+import android.os.Looper
+import android.os.Handler
 import android.net.NetworkRequest
 import android.net.NetworkCapabilities
 import android.net.ConnectivityManager
@@ -11,6 +13,7 @@ class ActiveNetworkStreamHandler(
 ) : EventChannel.StreamHandler  {
 
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
         val networkRequest = NetworkRequest.Builder()
@@ -19,34 +22,40 @@ class ActiveNetworkStreamHandler(
 
         networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: android.net.Network) {
-                events.success(getActiveNetworks())
+                emit(events)
             }
 
             override fun onLost(network: android.net.Network) {
-                events.success(getActiveNetworks())
+                emit(events)
             }
 
             override fun onCapabilitiesChanged(
                 network: android.net.Network,
                 networkCapabilities: NetworkCapabilities
             ) {
-                events.success(getActiveNetworks())
+                emit(events)
             }
 
             override fun onLinkPropertiesChanged(
                 network: android.net.Network,
                 linkProperties: android.net.LinkProperties
             ) {
-                events.success(getActiveNetworks())
+                emit(events)
             }
         }
 
-        events.success(getActiveNetworks())
+        emit(events)
 
         connectivityManager.registerNetworkCallback(
             networkRequest,
             networkCallback!!
         )
+    }
+
+    private fun emit(events: EventChannel.EventSink) {
+        mainHandler.post {
+            events.success(getActiveNetworks())
+        }
     }
 
     override fun onCancel(arguments: Any?) {
