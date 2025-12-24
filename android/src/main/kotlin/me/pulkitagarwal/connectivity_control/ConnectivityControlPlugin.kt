@@ -1,24 +1,42 @@
 package me.pulkitagarwal.connectivity_control
 
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import me.pulkitagarwal.connectivity_control.network.NetworkInformationMapper
+import me.pulkitagarwal.connectivity_control.ActiveNetworkStreamHandler
 
-/** ConnectivityControlPlugin */
+
 class ConnectivityControlPlugin :
     FlutterPlugin,
     MethodCallHandler {
-    // The MethodChannel that will the communication between Flutter and native Android
-    //
-    // This local reference serves to register the plugin with the Flutter Engine and unregister it
-    // when the Flutter Engine is detached from the Activity
-    private lateinit var channel: MethodChannel
+    private lateinit var methodChannel: MethodChannel
+
+    private lateinit var eventChannel: EventChannel
+
+    private lateinit var context: Context
+
+    private lateinit var connectivityManager: ConnectivityManager
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "connectivity_control")
-        channel.setMethodCallHandler(this)
+        context = flutterPluginBinding.applicationContext
+        connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        methodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "connectivity_control/methods")
+        methodChannel.setMethodCallHandler(this)
+
+        eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "connectivity_control/events")
+        eventChannel.setStreamHandler(ActiveNetworkStreamHandler(
+                connectivityManager = connectivityManager,
+                getActiveNetworks = { getActiveNetworks() }
+            )
+        )
     }
 
     override fun onMethodCall(
@@ -27,12 +45,24 @@ class ConnectivityControlPlugin :
     ) {
         if (call.method == "getPlatformVersion") {
             result.success("Android ${android.os.Build.VERSION.RELEASE}")
+        } else if(call.method == "getActiveNetworks"){
+            val networks = getActiveNetworks()
+            result.success(networks)
         } else {
             result.notImplemented()
         }
     }
 
+    private fun getActiveNetworks() : List<Map<String, Any?>> {
+        val network = connectivityManager.activeNetwork ?: return emptyList()
+
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(network) ?: return emptyList()
+
+        return NetworkInformationMapper.map(networkCapabilities)
+    }
+
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
+        methodChannel.setMethodCallHandler(null)
+        eventChannel.setStreamHandler(null)
     }
 }
