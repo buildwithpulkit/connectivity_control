@@ -24,7 +24,16 @@ class MethodChannelConnectivityControl extends ConnectivityControlPlatform {
 
   @override
   Future<List<NetworkInfo>> getActiveNetworks() async {
-    return <NetworkInfo>[];
+    final result = await _methodChannel.invokeMethod<List<dynamic>>(
+      'getActiveNetworks',
+    );
+
+    if (result == null || result.isEmpty) return <NetworkInfo>[];
+
+    return result
+        .cast<Map<dynamic, dynamic>>()
+        .map(NetworkInfo.fromMap)
+        .toList();
   }
 
   @override

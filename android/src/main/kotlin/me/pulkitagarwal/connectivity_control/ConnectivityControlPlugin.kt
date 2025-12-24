@@ -1,6 +1,5 @@
 package me.pulkitagarwal.connectivity_control
 
-import android.util.Log
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -35,8 +34,8 @@ class ConnectivityControlPlugin :
         if (call.method == "getPlatformVersion") {
             result.success("Android ${android.os.Build.VERSION.RELEASE}")
         } else if(call.method == "getActiveNetworks"){
-            getActiveNetworks()
-            result.success(null)
+            val networks = getActiveNetworks()
+            result.success(networks)
         } else {
             result.notImplemented()
         }
