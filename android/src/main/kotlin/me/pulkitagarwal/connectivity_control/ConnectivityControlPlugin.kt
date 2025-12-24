@@ -4,16 +4,21 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import me.pulkitagarwal.connectivity_control.network.NetworkInformationMapper
+import me.pulkitagarwal.connectivity_control.ActiveNetworkStreamHandler
+
 
 class ConnectivityControlPlugin :
     FlutterPlugin,
     MethodCallHandler {
-    private lateinit var channel: MethodChannel
+    private lateinit var methodChannel: MethodChannel
+
+    private lateinit var eventChannel: EventChannel
 
     private lateinit var context: Context
 
@@ -23,8 +28,15 @@ class ConnectivityControlPlugin :
         context = flutterPluginBinding.applicationContext
         connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "connectivity_control/methods")
-        channel.setMethodCallHandler(this)
+        methodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "connectivity_control/methods")
+        methodChannel.setMethodCallHandler(this)
+
+        eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "connectivity_control/events")
+        eventChannel.setStreamHandler(ActiveNetworkStreamHandler(
+                connectivityManager = connectivityManager,
+                getActiveNetworks = { getActiveNetworks() }
+            )
+        )
     }
 
     override fun onMethodCall(
@@ -50,6 +62,7 @@ class ConnectivityControlPlugin :
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
+        methodChannel.setMethodCallHandler(null)
+        eventChannel.setStreamHandler(null)
     }
 }
