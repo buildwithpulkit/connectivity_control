@@ -1,15 +1,75 @@
 # connectivity_control
 
-A new Flutter plugin project.
+A Flutter plugin that provides **low-level, real-time visibility into active network interfaces** on a device, including whether each network actually has internet access and its key characteristics.
 
-## Getting Started
+Unlike basic connectivity checks, this plugin is designed to help apps **understand, observe, and reason about multiple simultaneous networks** (Wi-Fi, cellular, VPN, etc.) using accurate system-level signals.
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/to/develop-plugins),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features (v0.0.1)
 
+- Detect **all active network interfaces** on the device
+- Identify network **type** (Wi-Fi, cellular, VPN, etc.)
+- Determine whether a network:
+  - Has internet capability
+  - Is validated by the system
+  - Is metered or unmetered
+- Retrieve **upstream and downstream bandwidth estimates**
+- Listen to **real-time network changes** via streams
+- Native, event-driven implementation (no polling)
+
+---
+
+## Platform Support
+
+| Platform | Support |
+|--------|---------|
+| Android | ✅ Supported (API 21+) |
+| iOS | ⏳ Planned |
+
+---
+
+## Installation
+
+```yaml
+dependencies:
+  connectivity_control: ^0.0.1
+```
+
+```bash
+flutter pub get
+```
+
+---
+
+## How to Use
+
+```dart
+import 'package:connectivity_control/connectivity_control.dart';
+```
+
+### Get Active Networks
+
+```dart
+final networks = await ConnectivityControl().getActiveNetworks();
+print(networks);
+```
+
+### Listen to Network Changes
+
+```dart
+ConnectivityControl().listenToActiveNetworks().listen((networks) {
+  print(networks);
+});
+```
+
+---
+
+## NetworkInfo Fields
+
+- `type`
+- `hasInternet`
+- `isValidated`
+- `isMetered`
+- `downLinkKbps`
+- `upLinkKbps`
