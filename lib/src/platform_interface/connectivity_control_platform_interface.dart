@@ -1,6 +1,6 @@
+import 'package:connectivity_control/src/core/models/network_info.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
-import 'connectivity_control_method_channel.dart';
+import 'package:connectivity_control/src/method_channel/connectivity_control_method_channel.dart';
 
 abstract class ConnectivityControlPlatform extends PlatformInterface {
   /// Constructs a ConnectivityControlPlatform.
@@ -8,7 +8,8 @@ abstract class ConnectivityControlPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static ConnectivityControlPlatform _instance = MethodChannelConnectivityControl();
+  static ConnectivityControlPlatform _instance =
+      MethodChannelConnectivityControl();
 
   /// The default instance of [ConnectivityControlPlatform] to use.
   ///
@@ -25,5 +26,17 @@ abstract class ConnectivityControlPlatform extends PlatformInterface {
 
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
+  }
+
+  /// Returns currently active networks.
+  Future<List<NetworkInfo>> getActiveNetworks() {
+    throw UnimplementedError('getActiveNetworks() has not been implemented.');
+  }
+
+  /// Stream of active network changes.
+  Stream<List<NetworkInfo>> listenToActiveNetworks() {
+    throw UnimplementedError(
+      'listenToActiveNetworks() has not been implemented.',
+    );
   }
 }

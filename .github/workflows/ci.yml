@@ -1,0 +1,24 @@
+name: ConnectivityControl CI
+
+on:
+    pull_request:
+        branches: [ production, development ]
+    
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: checkout repository
+              uses: actions/checkout@v4
+
+            - name: setup flutter
+              uses: subosito/flutter-action@v2
+              with:
+                channel: stable
+
+            - name: Install Deps
+              run: flutter pub get
+            
+            - name: Analyze code
+              run: flutter analyze
