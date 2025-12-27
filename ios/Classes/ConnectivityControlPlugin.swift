@@ -3,7 +3,7 @@ import UIKit
 
 public class ConnectivityControlPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "connectivity_control", binaryMessenger: registrar.messenger())
+    let methodChannel = FlutterMethodChannel(name: "connectivity_control/methods", binaryMessenger: registrar.messenger())
     let instance = ConnectivityControlPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
