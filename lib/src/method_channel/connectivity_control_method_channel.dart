@@ -15,14 +15,6 @@ class MethodChannelConnectivityControl extends ConnectivityControlPlatform {
   );
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await _methodChannel.invokeMethod<String>(
-      'getPlatformVersion',
-    );
-    return version;
-  }
-
-  @override
   Future<List<NetworkInfo>> getActiveNetworks() async {
     final result = await _methodChannel.invokeMethod<List<dynamic>>(
       'getActiveNetworks',
