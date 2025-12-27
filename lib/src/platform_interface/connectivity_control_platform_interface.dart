@@ -24,10 +24,6 @@ abstract class ConnectivityControlPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
   /// Returns currently active networks.
   Future<List<NetworkInfo>> getActiveNetworks() {
     throw UnimplementedError('getActiveNetworks() has not been implemented.');

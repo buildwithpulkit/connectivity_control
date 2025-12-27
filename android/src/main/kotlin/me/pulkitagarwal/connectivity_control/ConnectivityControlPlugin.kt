@@ -9,8 +9,8 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import me.pulkitagarwal.connectivity_control.network.NetworkInformationMapper
 import me.pulkitagarwal.connectivity_control.ActiveNetworkStreamHandler
+import me.pulkitagarwal.connectivity_control.network.NetworkInformationMapper
 
 
 class ConnectivityControlPlugin :
@@ -43,9 +43,7 @@ class ConnectivityControlPlugin :
         call: MethodCall,
         result: Result
     ) {
-        if (call.method == "getPlatformVersion") {
-            result.success("Android ${android.os.Build.VERSION.RELEASE}")
-        } else if(call.method == "getActiveNetworks"){
+        if(call.method == "getActiveNetworks"){
             val networks = getActiveNetworks()
             result.success(networks)
         } else {
