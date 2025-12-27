@@ -2,6 +2,12 @@ import 'package:connectivity_control/src/core/models/network_info.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:connectivity_control/src/method_channel/connectivity_control_method_channel.dart';
 
+/// The platform interface for the `connectivity_control` plugin.
+///
+/// This class defines the API that platform-specific implementations
+/// (such as Android or iOS) must implement. It uses the
+/// [PlatformInterface] pattern to ensure safe extension and prevent
+/// accidental breaking changes.
 abstract class ConnectivityControlPlatform extends PlatformInterface {
   /// Constructs a ConnectivityControlPlatform.
   ConnectivityControlPlatform() : super(token: _token);
