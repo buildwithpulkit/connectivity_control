@@ -19,7 +19,6 @@ class ConnectivityControl {
   }
 
   /// Emits updates whenever the set of active network connections changes.
-  ///
   /// The stream produces a new list of [NetworkInfo] whenever the platform
   /// detects a change in network state, such as connecting to or
   /// disconnecting from a network.
