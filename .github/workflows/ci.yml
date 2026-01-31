@@ -3,8 +3,6 @@ name: ConnectivityControl CI
 on:
   pull_request:
     branches: [ production, development ]
-  push:
-    branches: [ production , development ]
 
 jobs:
   build:
