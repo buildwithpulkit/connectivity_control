@@ -1,17 +1,13 @@
 name: ConnectivityControl CD
 
 on:
-  workflow_run:
-    workflows: [ "ConnectivityControl CI" ]
-    types:
-      - completed
+  push:
+    branches:
+      - production
+      - development
 
 jobs:
   publish:
-    if: >
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'push'
-
     runs-on: ubuntu-latest
 
     steps:
@@ -23,10 +19,13 @@ jobs:
         with:
           channel: stable
 
-      - name: Install Deps
+      - name: Flutter Version
+        run: flutter --version
+
+      - name: Install Dependencies
         run: flutter pub get
 
-      - name: Analyze code
+      - name: Analyze Code
         run: flutter analyze
 
       - name: Publish to pub.dev
