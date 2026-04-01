@@ -54,16 +54,18 @@ void main() {
 
       test('parses a single network correctly', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, (_) async => [
-                  {
-                    'type': 'wifi',
-                    'hasInternet': true,
-                    'isValidated': true,
-                    'isMetered': false,
-                    'downLinkKbps': 5000,
-                    'upLinkKbps': 1000,
-                  }
-                ]);
+            .setMockMethodCallHandler(
+                methodChannel,
+                (_) async => [
+                      {
+                        'type': 'wifi',
+                        'hasInternet': true,
+                        'isValidated': true,
+                        'isMetered': false,
+                        'downLinkKbps': 5000,
+                        'upLinkKbps': 1000,
+                      }
+                    ]);
 
         final result = await plugin.getActiveNetworks();
 
@@ -78,11 +80,13 @@ void main() {
 
       test('parses multiple networks', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, (_) async => [
-                  {'type': 'wifi', 'hasInternet': true},
-                  {'type': 'vpn', 'hasInternet': true},
-                  {'type': 'cellular', 'hasInternet': false},
-                ]);
+            .setMockMethodCallHandler(
+                methodChannel,
+                (_) async => [
+                      {'type': 'wifi', 'hasInternet': true},
+                      {'type': 'vpn', 'hasInternet': true},
+                      {'type': 'cellular', 'hasInternet': false},
+                    ]);
 
         final result = await plugin.getActiveNetworks();
 
@@ -94,9 +98,11 @@ void main() {
 
       test('parses network with null optional fields', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, (_) async => [
-                  {'type': 'ethernet'}
-                ]);
+            .setMockMethodCallHandler(
+                methodChannel,
+                (_) async => [
+                      {'type': 'ethernet'}
+                    ]);
 
         final result = await plugin.getActiveNetworks();
 
@@ -111,9 +117,11 @@ void main() {
 
       test('defaults unknown network type to other', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, (_) async => [
-                  {'type': 'satellite'}
-                ]);
+            .setMockMethodCallHandler(
+                methodChannel,
+                (_) async => [
+                      {'type': 'satellite'}
+                    ]);
 
         final result = await plugin.getActiveNetworks();
 
@@ -172,8 +180,12 @@ void main() {
           eventChannel,
           MockStreamHandler.inline(
             onListen: (_, events) {
-              events.success([{'type': 'wifi'}]);
-              events.success([{'type': 'cellular'}]);
+              events.success([
+                {'type': 'wifi'}
+              ]);
+              events.success([
+                {'type': 'cellular'}
+              ]);
               events.endOfStream();
             },
           ),

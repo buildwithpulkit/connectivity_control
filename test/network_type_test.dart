@@ -8,13 +8,15 @@ void main() {
     });
 
     test('contains all expected variants', () {
-      expect(NetworkType.values, containsAll([
-        NetworkType.vpn,
-        NetworkType.wifi,
-        NetworkType.ethernet,
-        NetworkType.cellular,
-        NetworkType.other,
-      ]));
+      expect(
+          NetworkType.values,
+          containsAll([
+            NetworkType.vpn,
+            NetworkType.wifi,
+            NetworkType.ethernet,
+            NetworkType.cellular,
+            NetworkType.other,
+          ]));
     });
 
     test('enum names match expected strings', () {

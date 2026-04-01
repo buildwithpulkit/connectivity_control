@@ -80,15 +80,18 @@ void main() {
           NetworkInfo(type: NetworkType.wifi, hasInternet: true),
           NetworkInfo(type: NetworkType.vpn),
         ];
-        ConnectivityControlPlatform.instance = _MockPlatform(networks: expected);
+        ConnectivityControlPlatform.instance =
+            _MockPlatform(networks: expected);
 
-        final result = await ConnectivityControlPlatform.instance.getActiveNetworks();
+        final result =
+            await ConnectivityControlPlatform.instance.getActiveNetworks();
         expect(result, expected);
       });
 
       test('getActiveNetworks returns empty list', () async {
         ConnectivityControlPlatform.instance = _MockPlatform(networks: []);
-        final result = await ConnectivityControlPlatform.instance.getActiveNetworks();
+        final result =
+            await ConnectivityControlPlatform.instance.getActiveNetworks();
         expect(result, isEmpty);
       });
 

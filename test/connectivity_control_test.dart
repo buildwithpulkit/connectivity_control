@@ -39,7 +39,8 @@ void main() {
         final expected = [
           NetworkInfo(type: NetworkType.wifi, hasInternet: true),
         ];
-        ConnectivityControlPlatform.instance = _MockPlatform(networks: expected);
+        ConnectivityControlPlatform.instance =
+            _MockPlatform(networks: expected);
 
         final result = await control.getActiveNetworks();
         expect(result, expected);
@@ -58,7 +59,8 @@ void main() {
           NetworkInfo(type: NetworkType.vpn, hasInternet: true),
           NetworkInfo(type: NetworkType.cellular, hasInternet: false),
         ];
-        ConnectivityControlPlatform.instance = _MockPlatform(networks: expected);
+        ConnectivityControlPlatform.instance =
+            _MockPlatform(networks: expected);
 
         final result = await control.getActiveNetworks();
 
@@ -114,7 +116,8 @@ void main() {
     group('instance sharing', () {
       test('multiple instances share the same platform', () async {
         final expected = [NetworkInfo(type: NetworkType.ethernet)];
-        ConnectivityControlPlatform.instance = _MockPlatform(networks: expected);
+        ConnectivityControlPlatform.instance =
+            _MockPlatform(networks: expected);
 
         final control1 = ConnectivityControl();
         final control2 = ConnectivityControl();
