@@ -4,14 +4,14 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'connectivity_control'
-  s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.version          = '0.0.3'
+  s.summary          = 'A Flutter plugin to inspect active network interfaces and their capabilities.'
   s.description      = <<-DESC
-A new Flutter plugin project.
+A Flutter plugin to inspect active network interfaces and their internet capability, validation state, metering, and bandwidth.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/buildwithpulkit/connectivity_control'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Pulkit Agarwal' => 'pulkit@axions.tech' }
   s.source           = { :path => '.' }
   s.source_files = 'connectivity_control/Sources/connectivity_control/**/*.swift'
   s.dependency 'Flutter'

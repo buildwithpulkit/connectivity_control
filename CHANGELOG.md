@@ -1,3 +1,14 @@
+## 0.0.3
+
+### Added
+- Swift Package Manager (SPM) support for iOS.
+
+### Changed
+- Migrated iOS source files to SPM-compatible directory structure.
+- Updated podspec to reference new source paths while maintaining CocoaPods compatibility.
+
+---
+
 ## 0.0.2
 
 ### Added
