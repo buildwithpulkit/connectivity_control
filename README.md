@@ -8,30 +8,24 @@ Unlike basic connectivity checks, this plugin is designed to help apps **underst
 
 ## Features
 
-### Android (Full Support)
 - Detect **all active network interfaces**
-- Identify network **type** (Wi-Fi, cellular, VPN, etc.)
+- Identify network **type** (Wi-Fi, cellular, VPN, Ethernet)
 - Determine whether a network:
   - Has internet capability
   - Is validated by the system
   - Is metered or unmetered
-- Retrieve **upstream and downstream bandwidth estimates**
+- Retrieve **upstream and downstream bandwidth estimates** (Android only)
 - Listen to **real-time network changes** via streams
 - Native, event-driven implementation (no polling)
-
-### iOS (Partial Support)
-- Retrieve **currently active network interfaces** via `getActiveNetworks`
-
-> ⚠️ Advanced network metadata and real-time streams are **Android-only** for now and will be introduced on iOS incrementally.
 
 ---
 
 ## Platform Support
 
 | Platform | Support |
-|--------|---------|
-| Android | ✅ Full support (API 23+) |
-| iOS | ⚠️ Partial support (`getActiveNetworks` only) |
+|----------|---------|
+| Android  | Full support (API 23+) |
+| iOS      | Full support (iOS 13+) |
 
 ---
 
@@ -39,7 +33,7 @@ Unlike basic connectivity checks, this plugin is designed to help apps **underst
 
 ```yaml
 dependencies:
-  connectivity_control: ^0.0.2
+  connectivity_control: ^0.0.4
 ```
 
 ```bash
@@ -54,16 +48,14 @@ flutter pub get
 import 'package:connectivity_control/connectivity_control.dart';
 ```
 
-### Get Active Networks (Android & iOS)
+### Get Active Networks
 
 ```dart
 final networks = await ConnectivityControl().getActiveNetworks();
 print(networks);
 ```
 
-> On iOS, this is currently the **only supported API**.
-
-### Listen to Network Changes (Android only)
+### Listen to Network Changes
 
 ```dart
 ConnectivityControl().listenToActiveNetworks().listen((networks) {
@@ -75,20 +67,16 @@ ConnectivityControl().listenToActiveNetworks().listen((networks) {
 
 ## NetworkInfo Fields
 
-> ⚠️ Field availability depends on platform.
+| Field | Android | iOS |
+|-------|---------|-----|
+| `type` | wifi, cellular, vpn, ethernet | wifi, cellular, ethernet, other |
+| `hasInternet` | Yes | Yes |
+| `isValidated` | Yes | Yes |
+| `isMetered` | Yes | Yes |
+| `downLinkKbps` | Yes | Not available |
+| `upLinkKbps` | Yes | Not available |
 
-### Android
-- `type`
-- `hasInternet`
-- `isValidated`
-- `isMetered`
-- `downLinkKbps`
-- `upLinkKbps`
+### Platform Notes
 
-### iOS
-- `type`
-- `hasInternet`
-- `isValidated` - always **null** due to platform limitations.
-- `isMetered` - always **null** due to platform limitations.
-- `downLinkKbps` - always **null** due to platform limitations.
-- `upLinkKbps` - always **null** due to platform limitations.
+- **VPN detection**: Android reports VPN as a separate network type. iOS does not expose VPN as a distinct interface type; VPN traffic appears under the underlying transport (Wi-Fi or cellular).
+- **Bandwidth**: iOS does not provide bandwidth estimation APIs. `downLinkKbps` and `upLinkKbps` will be `null` on iOS.

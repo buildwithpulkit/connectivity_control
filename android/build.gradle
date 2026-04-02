@@ -1,4 +1,4 @@
-group = "me.pulkitagarwal.connectivity_control"
+group = "tech.axions.connectivity_control"
 version = "1.0-SNAPSHOT"
 
 buildscript {
@@ -25,7 +25,7 @@ apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 
 android {
-    namespace = "me.pulkitagarwal.connectivity_control"
+    namespace = "tech.axions.connectivity_control"
 
     compileSdk = 36
 

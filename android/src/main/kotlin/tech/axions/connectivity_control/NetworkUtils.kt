@@ -1,4 +1,4 @@
-package me.pulkitagarwal.connectivity_control.network 
+package tech.axions.connectivity_control.network 
 
 import android.net.NetworkCapabilities
 

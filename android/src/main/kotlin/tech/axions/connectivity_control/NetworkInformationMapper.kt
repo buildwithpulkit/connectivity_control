@@ -1,7 +1,7 @@
-package me.pulkitagarwal.connectivity_control.network
+package tech.axions.connectivity_control.network
 
 import android.net.NetworkCapabilities
-import me.pulkitagarwal.connectivity_control.network.NetworkUtils
+import tech.axions.connectivity_control.network.NetworkUtils
 
 object NetworkInformationMapper {
     private val transports = listOf(

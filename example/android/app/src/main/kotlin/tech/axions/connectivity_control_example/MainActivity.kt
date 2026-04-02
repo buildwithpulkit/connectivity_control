@@ -1,4 +1,4 @@
-package me.pulkitagarwal.connectivity_control_example
+package tech.axions.connectivity_control_example
 
 import io.flutter.embedding.android.FlutterActivity
 
