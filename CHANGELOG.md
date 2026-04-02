@@ -1,3 +1,20 @@
+## 0.0.4
+
+### Added
+- Real-time network change stream (`listenToActiveNetworks`) on iOS via `NWPathMonitor`.
+- `isMetered` field on iOS, mapped from `NWPath.isExpensive`.
+- `isValidated` field on iOS, mapped from `NWPath.status == .satisfied`.
+- Proper resource cleanup on iOS via `detachFromEngine`.
+
+### Changed
+- Updated README to reflect full iOS platform support.
+
+### Platform Support
+- **Android**: Full implementation (unchanged).
+- **iOS**: Full implementation — both `getActiveNetworks` and `listenToActiveNetworks` now supported with `isMetered` and `isValidated` fields populated. `downLinkKbps`/`upLinkKbps` remain unavailable (no iOS API). VPN not reported as a separate type (platform limitation).
+
+---
+
 ## 0.0.3
 
 ### Added
