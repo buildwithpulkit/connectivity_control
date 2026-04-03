@@ -22,7 +22,7 @@ class _MockPlatform extends ConnectivityControlPlatform {
 
 void main() {
   group('ConnectivityControl', () {
-    final control = ConnectivityControl.instance;
+    final control = ConnectivityControl();
 
     tearDown(() {
       ConnectivityControlPlatform.instance = MethodChannelConnectivityControl();
@@ -109,7 +109,7 @@ void main() {
 
     group('singleton', () {
       test('instance always returns the same object', () {
-        expect(ConnectivityControl.instance, same(control));
+        expect(ConnectivityControl(), same(control));
       });
     });
   });

@@ -6,14 +6,15 @@ export 'package:connectivity_control/src/core/models/network_info.dart';
 
 /// Exposes APIs to access network connectivity information.
 ///
-/// Use [ConnectivityControl.instance] to access the singleton.
 /// This class delegates platform-specific implementations to
 /// [ConnectivityControlPlatform].
 class ConnectivityControl {
+  /// Creates or returns the singleton [ConnectivityControl] instance.
+  factory ConnectivityControl() => _instance;
+
   ConnectivityControl._();
 
-  /// The singleton instance of [ConnectivityControl].
-  static final ConnectivityControl instance = ConnectivityControl._();
+  static final ConnectivityControl _instance = ConnectivityControl._();
 
   /// Returns the list of currently active network connections.
   ///

@@ -1,7 +1,13 @@
 name: connectivity_control
 description: "A Flutter plugin to inspect active network interfaces and their internet capability, validation state, metering, and bandwidth."
-version: 0.0.4
+version: 1.0.0
 repository: https://github.com/axions-org/connectivity_control
+issue_tracker: https://github.com/axions-org/connectivity_control/issues
+topics:
+  - connectivity
+  - network
+  - wifi
+  - networking
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

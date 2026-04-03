@@ -41,7 +41,7 @@ The plugin follows Flutter's **platform interface pattern**:
    - `'connectivity_control/events'` for the live stream
 4. **Models** (`lib/src/core/`) — `NetworkInfo` (data model) and `NetworkType` enum
 
-Android supports all `NetworkInfo` fields. iOS supports all fields except `downLinkKbps`/`upLinkKbps` (no API) and VPN type detection (platform limitation). `ConnectivityControl` is a singleton accessed via `ConnectivityControl.instance`.
+Android supports all `NetworkInfo` fields. iOS supports all fields except `downLinkKbps`/`upLinkKbps` (no API) and VPN type detection (platform limitation). `ConnectivityControl` is a singleton accessed via `ConnectivityControl()` factory constructor.
 
 ## Testing Conventions
 
