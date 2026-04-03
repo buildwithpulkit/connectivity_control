@@ -19,16 +19,12 @@ class _MockPlatform extends ConnectivityControlPlatform {
   Future<List<NetworkInfo>> getActiveNetworks() async => networks;
 
   @override
-  Stream<List<NetworkInfo>> listenToActiveNetworks() => stream;
+  Stream<List<NetworkInfo>> get onActiveNetworksChanged => stream;
 }
 
 void main() {
   group('ConnectivityControl', () {
-    late ConnectivityControl control;
-
-    setUp(() {
-      control = ConnectivityControl();
-    });
+    final control = ConnectivityControl.instance;
 
     tearDown(() {
       ConnectivityControlPlatform.instance = MethodChannelConnectivityControl();
@@ -78,11 +74,11 @@ void main() {
       });
     });
 
-    group('listenToActiveNetworks', () {
+    group('onActiveNetworksChanged', () {
       test('returns a Stream', () {
         ConnectivityControlPlatform.instance = _MockPlatform();
 
-        final result = control.listenToActiveNetworks();
+        final result = control.onActiveNetworksChanged;
         expect(result, isA<Stream<List<NetworkInfo>>>());
       });
 
@@ -92,7 +88,7 @@ void main() {
           stream: Stream.value(expected),
         );
 
-        final result = await control.listenToActiveNetworks().first;
+        final result = await control.onActiveNetworksChanged.first;
         expect(result, expected);
       });
 
@@ -106,27 +102,16 @@ void main() {
           stream: Stream.fromIterable([event1, event2]),
         );
 
-        final results = await control.listenToActiveNetworks().toList();
+        final results = await control.onActiveNetworksChanged.toList();
         expect(results, hasLength(2));
         expect(results[0], event1);
         expect(results[1], event2);
       });
     });
 
-    group('instance sharing', () {
-      test('multiple instances share the same platform', () async {
-        final expected = [NetworkInfo(type: NetworkType.ethernet)];
-        ConnectivityControlPlatform.instance =
-            _MockPlatform(networks: expected);
-
-        final control1 = ConnectivityControl();
-        final control2 = ConnectivityControl();
-
-        final result1 = await control1.getActiveNetworks();
-        final result2 = await control2.getActiveNetworks();
-
-        expect(result1, expected);
-        expect(result2, expected);
+    group('singleton', () {
+      test('instance always returns the same object', () {
+        expect(ConnectivityControl.instance, same(control));
       });
     });
   });

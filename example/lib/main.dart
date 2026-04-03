@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _connectivityControlPlugin = ConnectivityControl();
+  final _connectivityControlPlugin = ConnectivityControl.instance;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Plugin example app')),
+        appBar: AppBar(title: const Text('Connectivity Control')),
         body: Center(child: Text('Running on console')),
       ),
     );

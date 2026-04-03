@@ -51,14 +51,14 @@ import 'package:connectivity_control/connectivity_control.dart';
 ### Get Active Networks
 
 ```dart
-final networks = await ConnectivityControl().getActiveNetworks();
+final networks = await ConnectivityControl.instance.getActiveNetworks();
 print(networks);
 ```
 
 ### Listen to Network Changes
 
 ```dart
-ConnectivityControl().listenToActiveNetworks().listen((networks) {
+ConnectivityControl.instance.onActiveNetworksChanged.listen((networks) {
   print(networks);
 });
 ```

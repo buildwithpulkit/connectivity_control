@@ -36,9 +36,9 @@ abstract class ConnectivityControlPlatform extends PlatformInterface {
   }
 
   /// Stream of active network changes.
-  Stream<List<NetworkInfo>> listenToActiveNetworks() {
+  Stream<List<NetworkInfo>> get onActiveNetworksChanged {
     throw UnimplementedError(
-      'listenToActiveNetworks() has not been implemented.',
+      'onActiveNetworksChanged has not been implemented.',
     );
   }
 }

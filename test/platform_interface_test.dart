@@ -20,7 +20,7 @@ class _MockPlatform extends ConnectivityControlPlatform {
   Future<List<NetworkInfo>> getActiveNetworks() async => networks;
 
   @override
-  Stream<List<NetworkInfo>> listenToActiveNetworks() => stream;
+  Stream<List<NetworkInfo>> get onActiveNetworksChanged => stream;
 }
 
 /// Minimal subclass that does NOT override the abstract methods,
@@ -65,10 +65,10 @@ void main() {
         );
       });
 
-      test('listenToActiveNetworks throws UnimplementedError', () {
+      test('onActiveNetworksChanged throws UnimplementedError', () {
         final platform = _UnimplementedPlatform();
         expect(
-          () => platform.listenToActiveNetworks(),
+          () => platform.onActiveNetworksChanged,
           throwsA(isA<UnimplementedError>()),
         );
       });
@@ -95,27 +95,26 @@ void main() {
         expect(result, isEmpty);
       });
 
-      test('listenToActiveNetworks emits mock stream data', () async {
+      test('onActiveNetworksChanged emits mock stream data', () async {
         final expected = [NetworkInfo(type: NetworkType.cellular)];
         ConnectivityControlPlatform.instance = _MockPlatform(
           stream: Stream.value(expected),
         );
 
-        final result = await ConnectivityControlPlatform.instance
-            .listenToActiveNetworks()
-            .first;
+        final result = await ConnectivityControlPlatform
+            .instance.onActiveNetworksChanged.first;
         expect(result, expected);
       });
 
-      test('listenToActiveNetworks emits multiple events', () async {
+      test('onActiveNetworksChanged emits multiple events', () async {
         final event1 = [NetworkInfo(type: NetworkType.wifi)];
         final event2 = [NetworkInfo(type: NetworkType.ethernet)];
         ConnectivityControlPlatform.instance = _MockPlatform(
           stream: Stream.fromIterable([event1, event2]),
         );
 
-        final results = await ConnectivityControlPlatform.instance
-            .listenToActiveNetworks()
+        final results = await ConnectivityControlPlatform
+            .instance.onActiveNetworksChanged
             .toList();
         expect(results, [event1, event2]);
       });

@@ -29,7 +29,7 @@ class MethodChannelConnectivityControl extends ConnectivityControlPlatform {
   }
 
   @override
-  Stream<List<NetworkInfo>> listenToActiveNetworks() {
+  Stream<List<NetworkInfo>> get onActiveNetworksChanged {
     return _eventChannel.receiveBroadcastStream().map((event) {
       if (event == null) return <NetworkInfo>[];
 
