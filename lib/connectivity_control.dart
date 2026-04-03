@@ -1,6 +1,9 @@
 import 'package:connectivity_control/src/core/models/network_info.dart';
 import 'package:connectivity_control/src/platform_interface/connectivity_control_platform_interface.dart';
 
+export 'package:connectivity_control/src/core/enums/network_type.dart';
+export 'package:connectivity_control/src/core/models/network_info.dart';
+
 /// Exposes APIs to access network connectivity information.
 ///
 /// Use [ConnectivityControl.instance] to access the singleton.
