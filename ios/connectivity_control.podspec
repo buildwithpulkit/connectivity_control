@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'connectivity_control'
-  s.version          = '0.0.3'
+  s.version          = '1.0.0'
   s.summary          = 'A Flutter plugin to inspect active network interfaces and their capabilities.'
   s.description      = <<-DESC
 A Flutter plugin to inspect active network interfaces and their internet capability, validation state, metering, and bandwidth.
