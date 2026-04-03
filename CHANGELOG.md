@@ -1,3 +1,16 @@
+## 1.0.0
+
+### Changed
+- **BREAKING**: `listenToActiveNetworks()` renamed to `onActiveNetworksChanged` stream getter.
+- Exported `NetworkInfo` and `NetworkType` from the barrel file — single import gives access to all public types.
+- Added `topics` and `issue_tracker` to pubspec for pub.dev discoverability.
+
+### Platform Support
+- **Android**: Full support (API 24+).
+- **iOS**: Full support (iOS 13+). `downLinkKbps`/`upLinkKbps` unavailable (no iOS API). VPN not reported as a separate type (platform limitation).
+
+---
+
 ## 0.0.4
 
 ### Added

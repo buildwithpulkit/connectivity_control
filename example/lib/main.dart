@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _connectivityControlPlugin = ConnectivityControl.instance;
+  final _connectivityControlPlugin = ConnectivityControl();
   StreamSubscription<List<NetworkInfo>>? _subscription;
 
   @override
