@@ -1,6 +1,4 @@
 import 'package:connectivity_control/connectivity_control.dart';
-import 'package:connectivity_control/src/core/enums/network_type.dart';
-import 'package:connectivity_control/src/core/models/network_info.dart';
 import 'package:connectivity_control/src/method_channel/connectivity_control_method_channel.dart';
 import 'package:connectivity_control/src/platform_interface/connectivity_control_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
