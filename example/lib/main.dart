@@ -36,8 +36,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _listenToNetworkChanges() {
-    _subscription =
-        _connectivityControlPlugin.onActiveNetworksChanged.listen((networks) {
+    _subscription = _connectivityControlPlugin.onActiveNetworksChanged.listen((
+      networks,
+    ) {
       log('[onActiveNetworksChanged] $networks');
     });
   }
