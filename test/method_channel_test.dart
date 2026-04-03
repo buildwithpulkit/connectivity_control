@@ -129,7 +129,7 @@ void main() {
       });
     });
 
-    group('listenToActiveNetworks', () {
+    group('onActiveNetworksChanged', () {
       test('returns empty list when event data is null', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockStreamHandler(
@@ -142,7 +142,7 @@ void main() {
           ),
         );
 
-        final result = await plugin.listenToActiveNetworks().first;
+        final result = await plugin.onActiveNetworksChanged.first;
         expect(result, isEmpty);
       });
 
@@ -165,7 +165,7 @@ void main() {
           ),
         );
 
-        final result = await plugin.listenToActiveNetworks().first;
+        final result = await plugin.onActiveNetworksChanged.first;
 
         expect(result, hasLength(1));
         expect(result.first.type, NetworkType.ethernet);
@@ -191,7 +191,7 @@ void main() {
           ),
         );
 
-        final results = await plugin.listenToActiveNetworks().toList();
+        final results = await plugin.onActiveNetworksChanged.toList();
 
         expect(results, hasLength(2));
         expect(results[0].first.type, NetworkType.wifi);
@@ -210,7 +210,7 @@ void main() {
           ),
         );
 
-        final result = await plugin.listenToActiveNetworks().first;
+        final result = await plugin.onActiveNetworksChanged.first;
         expect(result, isEmpty);
       });
 
@@ -223,7 +223,7 @@ void main() {
           ),
         );
 
-        final stream = plugin.listenToActiveNetworks();
+        final stream = plugin.onActiveNetworksChanged;
         expect(stream.isBroadcast, isTrue);
       });
     });

@@ -3,10 +3,15 @@ import 'package:connectivity_control/src/platform_interface/connectivity_control
 
 /// Exposes APIs to access network connectivity information.
 ///
-/// This class acts as the public entry point of the `connectivity_control`
-/// plugin and delegates platform-specific implementations to
+/// Use [ConnectivityControl.instance] to access the singleton.
+/// This class delegates platform-specific implementations to
 /// [ConnectivityControlPlatform].
 class ConnectivityControl {
+  ConnectivityControl._();
+
+  /// The singleton instance of [ConnectivityControl].
+  static final ConnectivityControl instance = ConnectivityControl._();
+
   /// Returns the list of currently active network connections.
   ///
   /// The returned list may contain multiple entries when more than one
@@ -19,10 +24,11 @@ class ConnectivityControl {
   }
 
   /// Emits updates whenever the set of active network connections changes.
+  ///
   /// The stream produces a new list of [NetworkInfo] whenever the platform
   /// detects a change in network state, such as connecting to or
   /// disconnecting from a network.
-  Stream<List<NetworkInfo>> listenToActiveNetworks() {
-    return ConnectivityControlPlatform.instance.listenToActiveNetworks();
+  Stream<List<NetworkInfo>> get onActiveNetworksChanged {
+    return ConnectivityControlPlatform.instance.onActiveNetworksChanged;
   }
 }
