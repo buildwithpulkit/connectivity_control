@@ -1,3 +1,17 @@
+## 1.1.0
+
+### Added
+- **macOS support** (macOS 10.15+) via `NWPathMonitor` from the `Network` framework.
+- macOS ships both CocoaPods (`macos/connectivity_control.podspec`) and Swift Package Manager (`macos/connectivity_control/Package.swift`) support, matching the iOS side.
+- CI: new `build-macos` job on `macos-latest` that runs `flutter build macos` on the example app to guard against native compilation regressions.
+
+### Platform Notes
+- **macOS**: `type` reports wifi, ethernet, and other. Cellular and VPN are not reported (platform limitation — `NWPathMonitor` exposes no VPN interface type, and no Mac hardware has a cellular radio).
+- **macOS `isMetered`**: mapped to `NWPath.isExpensive || NWPath.isConstrained` — covers both shared connections (e.g. iPhone tethering) and user-enabled Low Data Mode.
+- **macOS bandwidth**: `downLinkKbps` and `upLinkKbps` are always `null` (no macOS API available).
+
+---
+
 ## 1.0.0
 
 ### Changed

@@ -26,6 +26,7 @@ Unlike basic connectivity checks, this plugin is designed to help apps **underst
 |----------|---------|
 | Android  | Full support (API 23+) |
 | iOS      | Full support (iOS 13+) |
+| macOS    | Full support (macOS 10.15+) |
 
 ---
 
@@ -67,16 +68,17 @@ ConnectivityControl().onActiveNetworksChanged.listen((networks) {
 
 ## NetworkInfo Fields
 
-| Field | Android | iOS |
-|-------|---------|-----|
-| `type` | wifi, cellular, vpn, ethernet | wifi, cellular, ethernet, other |
-| `hasInternet` | Yes | Yes |
-| `isValidated` | Yes | Yes |
-| `isMetered` | Yes | Yes |
-| `downLinkKbps` | Yes | Not available |
-| `upLinkKbps` | Yes | Not available |
+| Field | Android | iOS | macOS |
+|-------|---------|-----|-------|
+| `type` | wifi, cellular, vpn, ethernet | wifi, cellular, ethernet, other | wifi, ethernet, other |
+| `hasInternet` | Yes | Yes | Yes |
+| `isValidated` | Yes | Yes | Yes |
+| `isMetered` | Yes | Yes | Yes |
+| `downLinkKbps` | Yes | Not available | Not available |
+| `upLinkKbps` | Yes | Not available | Not available |
 
 ### Platform Notes
 
-- **VPN detection**: Android reports VPN as a separate network type. iOS does not expose VPN as a distinct interface type; VPN traffic appears under the underlying transport (Wi-Fi or cellular).
-- **Bandwidth**: iOS does not provide bandwidth estimation APIs. `downLinkKbps` and `upLinkKbps` will be `null` on iOS.
+- **VPN detection**: Android reports VPN as a separate network type. iOS and macOS do not expose VPN as a distinct interface type via `NWPathMonitor`; VPN traffic appears under the underlying transport.
+- **Bandwidth**: iOS and macOS do not provide bandwidth estimation APIs. `downLinkKbps` and `upLinkKbps` will be `null` on both platforms.
+- **`isMetered` on macOS**: Maps to `isExpensive || isConstrained`. `isExpensive` is true for shared connections (e.g. iPhone USB tethering); `isConstrained` reflects the user enabling Low Data Mode in System Preferences.
