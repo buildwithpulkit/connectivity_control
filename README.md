@@ -36,7 +36,7 @@ Unlike basic connectivity checks, this plugin is designed to help apps **underst
 
 ```yaml
 dependencies:
-  connectivity_control: ^1.0.0
+  connectivity_control: ^1.1.0
 ```
 
 ```bash

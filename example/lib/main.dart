@@ -106,7 +106,10 @@ class _DemoPageState extends State<DemoPage> {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF34D399)),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Color(0xFF34D399),
+                      ),
                     )
                   : const Icon(Icons.refresh_rounded, color: Color(0xFF34D399)),
               tooltip: 'Refresh',
@@ -114,12 +117,12 @@ class _DemoPageState extends State<DemoPage> {
             child: _snapshotNetworks == null
                 ? const _EmptyHint(text: 'Fetching…')
                 : _snapshotNetworks!.isEmpty
-                    ? const _EmptyHint(text: 'No active networks found')
-                    : Column(
-                        children: _snapshotNetworks!
-                            .map((n) => _NetworkCard(info: n))
-                            .toList(),
-                      ),
+                ? const _EmptyHint(text: 'No active networks found')
+                : Column(
+                    children: _snapshotNetworks!
+                        .map((n) => _NetworkCard(info: n))
+                        .toList(),
+                  ),
           ),
           const SizedBox(height: 16),
           _SectionCard(
@@ -129,7 +132,9 @@ class _DemoPageState extends State<DemoPage> {
             child: _liveNetworks.isEmpty
                 ? const _EmptyHint(text: 'Waiting for network changes…')
                 : Column(
-                    children: _liveNetworks.map((n) => _NetworkCard(info: n)).toList(),
+                    children: _liveNetworks
+                        .map((n) => _NetworkCard(info: n))
+                        .toList(),
                   ),
           ),
         ],
@@ -278,7 +283,10 @@ class _TypeIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final (icon, color) = switch (type) {
       NetworkType.wifi => (Icons.wifi_rounded, const Color(0xFF60A5FA)),
-      NetworkType.cellular => (Icons.signal_cellular_alt_rounded, const Color(0xFFFBBF24)),
+      NetworkType.cellular => (
+        Icons.signal_cellular_alt_rounded,
+        const Color(0xFFFBBF24),
+      ),
       NetworkType.vpn => (Icons.vpn_lock_rounded, const Color(0xFFA78BFA)),
       NetworkType.ethernet => (Icons.cable_rounded, const Color(0xFF34D399)),
       NetworkType.other => (Icons.device_hub_rounded, const Color(0xFF94A3B8)),
@@ -300,8 +308,16 @@ class _BoolChip extends StatelessWidget {
     final (bg, fg, icon) = value == null
         ? (const Color(0xFF1E293B), const Color(0xFF64748B), Icons.remove)
         : value!
-            ? (const Color(0xFF14532D), const Color(0xFF86EFAC), Icons.check_rounded)
-            : (const Color(0xFF450A0A), const Color(0xFFFCA5A5), Icons.close_rounded);
+        ? (
+            const Color(0xFF14532D),
+            const Color(0xFF86EFAC),
+            Icons.check_rounded,
+          )
+        : (
+            const Color(0xFF450A0A),
+            const Color(0xFFFCA5A5),
+            Icons.close_rounded,
+          );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -315,7 +331,10 @@ class _BoolChip extends StatelessWidget {
         children: [
           Icon(icon, size: 12, color: fg),
           const SizedBox(width: 4),
-          Text(label, style: TextStyle(fontSize: 11, color: fg, fontFamily: 'monospace')),
+          Text(
+            label,
+            style: TextStyle(fontSize: 11, color: fg, fontFamily: 'monospace'),
+          ),
         ],
       ),
     );
@@ -329,7 +348,11 @@ class _BandwidthPill extends StatelessWidget {
   final Color color;
   final int value;
 
-  const _BandwidthPill({required this.icon, required this.color, required this.value});
+  const _BandwidthPill({
+    required this.icon,
+    required this.color,
+    required this.value,
+  });
 
   String get _formatted {
     if (value >= 1000) return '${(value / 1000).toStringAsFixed(1)} Mbps';
@@ -343,7 +366,10 @@ class _BandwidthPill extends StatelessWidget {
       children: [
         Icon(icon, size: 13, color: color),
         const SizedBox(width: 3),
-        Text(_formatted, style: TextStyle(fontSize: 12, color: color, fontFamily: 'monospace')),
+        Text(
+          _formatted,
+          style: TextStyle(fontSize: 12, color: color, fontFamily: 'monospace'),
+        ),
       ],
     );
   }
@@ -360,13 +386,17 @@ class _LiveDot extends StatefulWidget {
   State<_LiveDot> createState() => _LiveDotState();
 }
 
-class _LiveDotState extends State<_LiveDot> with SingleTickerProviderStateMixin {
+class _LiveDotState extends State<_LiveDot>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 900),
   )..repeat(reverse: true);
 
-  late final Animation<double> _opacity = Tween(begin: 0.3, end: 1.0).animate(_controller);
+  late final Animation<double> _opacity = Tween(
+    begin: 0.3,
+    end: 1.0,
+  ).animate(_controller);
 
   @override
   void dispose() {
@@ -422,9 +452,12 @@ class _EmptyHint extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Text(
         text,
-        style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), fontFamily: 'monospace'),
+        style: const TextStyle(
+          fontSize: 12,
+          color: Color(0xFF64748B),
+          fontFamily: 'monospace',
+        ),
       ),
     );
   }
 }
-
