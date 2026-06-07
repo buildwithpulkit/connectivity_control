@@ -8,10 +8,24 @@ public class ConnectivityControlPlugin: NSObject, FlutterPlugin {
   private let queue = DispatchQueue(label: "connectivity_control.monitor")
   private var methodChannel: FlutterMethodChannel?
   private var eventChannel: FlutterEventChannel?
+  private var cachedPath: NWPath?
+  private var pendingResults: [FlutterResult] = []
 
   override init() {
     self.monitor = NWPathMonitor()
     super.init()
+    self.monitor.pathUpdateHandler = { [weak self] path in
+      DispatchQueue.main.async {
+        guard let self = self else { return }
+        self.cachedPath = path
+        let pending = self.pendingResults
+        self.pendingResults = []
+        let networks = NetworkInformationMapper.map(path: path)
+        for pendingResult in pending {
+          pendingResult(networks)
+        }
+      }
+    }
     self.monitor.start(queue: queue)
   }
 
@@ -39,9 +53,11 @@ public class ConnectivityControlPlugin: NSObject, FlutterPlugin {
     switch call.method {
 
     case "getActiveNetworks":
-      let path = monitor.currentPath
-      let networks = NetworkInformationMapper.map(path: path)
-      result(networks)
+      if let path = cachedPath {
+        result(NetworkInformationMapper.map(path: path))
+      } else {
+        pendingResults.append(result)
+      }
 
     default:
       result(FlutterMethodNotImplemented)
