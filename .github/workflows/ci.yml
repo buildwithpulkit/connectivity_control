@@ -39,6 +39,16 @@ jobs:
           files: coverage/lcov.info
           fail_ci_if_error: false
 
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: cd example && flutter build macos
+
   dry-run-publish:
     runs-on: ubuntu-latest
     steps:
