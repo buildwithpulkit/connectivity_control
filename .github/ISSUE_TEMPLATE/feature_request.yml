@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Have an idea to make this plugin better? Describe it below. For general questions, please use [Discussions](https://github.com/axions-org/connectivity_control/discussions) instead.
+        Have an idea to make this plugin better? Describe it below. For general questions, please use [Discussions](https://github.com/buildwithpulkit/connectivity_control/discussions) instead.
 
   - type: checkboxes
     id: preflight

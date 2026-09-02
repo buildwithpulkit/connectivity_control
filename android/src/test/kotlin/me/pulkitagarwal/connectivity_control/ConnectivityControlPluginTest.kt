@@ -1,4 +1,4 @@
-package tech.axions.connectivity_control
+package me.pulkitagarwal.connectivity_control
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel

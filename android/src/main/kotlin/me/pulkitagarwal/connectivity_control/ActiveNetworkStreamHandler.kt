@@ -1,4 +1,4 @@
-package tech.axions.connectivity_control
+package me.pulkitagarwal.connectivity_control
 
 import android.os.Looper
 import android.os.Handler
