@@ -1,4 +1,4 @@
-package tech.axions.connectivity_control
+package me.pulkitagarwal.connectivity_control
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -9,8 +9,8 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import tech.axions.connectivity_control.ActiveNetworkStreamHandler
-import tech.axions.connectivity_control.network.NetworkInformationMapper
+import me.pulkitagarwal.connectivity_control.ActiveNetworkStreamHandler
+import me.pulkitagarwal.connectivity_control.network.NetworkInformationMapper
 
 
 class ConnectivityControlPlugin :

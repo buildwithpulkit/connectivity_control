@@ -9,9 +9,9 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 A Flutter plugin to inspect active network interfaces and their internet capability, validation state, metering, and bandwidth.
                        DESC
-  s.homepage         = 'https://github.com/axions-org/connectivity_control'
+  s.homepage         = 'https://github.com/buildwithpulkit/connectivity_control'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Pulkit Agarwal' => 'support@axions.tech' }
+  s.author           = { 'Pulkit Agarwal' => 'support@pulkitagarwal.me' }
   s.source           = { :path => '.' }
   s.source_files = 'connectivity_control/Sources/connectivity_control/**/*.swift'
   s.dependency 'FlutterMacOS'

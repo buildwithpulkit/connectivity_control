@@ -4,7 +4,7 @@ A Flutter plugin that provides **low-level, system-driven visibility into active
 
 Unlike basic connectivity checks, this plugin is designed to help apps **understand, observe, and reason about multiple simultaneous networks** (Wi-Fi, cellular, VPN, etc.) using native platform signals.
 
-[▶ Watch the demo](https://raw.githubusercontent.com/axions-org/connectivity_control/production/assets/example_app_demo.mp4)
+[▶ Watch the demo](https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/example_app_demo.mp4)
 
 ---
 

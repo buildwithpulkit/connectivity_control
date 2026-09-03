@@ -8,7 +8,7 @@
 PRODUCT_NAME = connectivity_control_example
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = tech.axions.connectivityControlExample
+PRODUCT_BUNDLE_IDENTIFIER = me.pulkitagarwal.connectivityControlExample
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 tech.axions. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 me.pulkitagarwal. All rights reserved.
