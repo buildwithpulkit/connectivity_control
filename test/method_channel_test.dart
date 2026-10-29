@@ -44,9 +44,9 @@ void main() {
         String? invokedMethod;
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(methodChannel, (call) async {
-          invokedMethod = call.method;
-          return null;
-        });
+              invokedMethod = call.method;
+              return null;
+            });
 
         await plugin.getActiveNetworks();
         expect(invokedMethod, 'getActiveNetworks');
@@ -55,17 +55,18 @@ void main() {
       test('parses a single network correctly', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(
-                methodChannel,
-                (_) async => [
-                      {
-                        'type': 'wifi',
-                        'hasInternet': true,
-                        'isValidated': true,
-                        'isMetered': false,
-                        'downLinkKbps': 5000,
-                        'upLinkKbps': 1000,
-                      }
-                    ]);
+              methodChannel,
+              (_) async => [
+                {
+                  'type': 'wifi',
+                  'hasInternet': true,
+                  'isValidated': true,
+                  'isMetered': false,
+                  'downLinkKbps': 5000,
+                  'upLinkKbps': 1000,
+                },
+              ],
+            );
 
         final result = await plugin.getActiveNetworks();
 
@@ -81,12 +82,13 @@ void main() {
       test('parses multiple networks', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(
-                methodChannel,
-                (_) async => [
-                      {'type': 'wifi', 'hasInternet': true},
-                      {'type': 'vpn', 'hasInternet': true},
-                      {'type': 'cellular', 'hasInternet': false},
-                    ]);
+              methodChannel,
+              (_) async => [
+                {'type': 'wifi', 'hasInternet': true},
+                {'type': 'vpn', 'hasInternet': true},
+                {'type': 'cellular', 'hasInternet': false},
+              ],
+            );
 
         final result = await plugin.getActiveNetworks();
 
@@ -99,10 +101,11 @@ void main() {
       test('parses network with null optional fields', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(
-                methodChannel,
-                (_) async => [
-                      {'type': 'ethernet'}
-                    ]);
+              methodChannel,
+              (_) async => [
+                {'type': 'ethernet'},
+              ],
+            );
 
         final result = await plugin.getActiveNetworks();
 
@@ -118,10 +121,11 @@ void main() {
       test('defaults unknown network type to other', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(
-                methodChannel,
-                (_) async => [
-                      {'type': 'satellite'}
-                    ]);
+              methodChannel,
+              (_) async => [
+                {'type': 'satellite'},
+              ],
+            );
 
         final result = await plugin.getActiveNetworks();
 
@@ -133,14 +137,14 @@ void main() {
       test('returns empty list when event data is null', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockStreamHandler(
-          eventChannel,
-          MockStreamHandler.inline(
-            onListen: (_, events) {
-              events.success(null);
-              events.endOfStream();
-            },
-          ),
-        );
+              eventChannel,
+              MockStreamHandler.inline(
+                onListen: (_, events) {
+                  events.success(null);
+                  events.endOfStream();
+                },
+              ),
+            );
 
         final result = await plugin.onActiveNetworksChanged.first;
         expect(result, isEmpty);
@@ -149,21 +153,21 @@ void main() {
       test('emits parsed NetworkInfo list', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockStreamHandler(
-          eventChannel,
-          MockStreamHandler.inline(
-            onListen: (_, events) {
-              events.success([
-                {
-                  'type': 'ethernet',
-                  'hasInternet': true,
-                  'downLinkKbps': 100000,
-                  'upLinkKbps': 50000,
-                }
-              ]);
-              events.endOfStream();
-            },
-          ),
-        );
+              eventChannel,
+              MockStreamHandler.inline(
+                onListen: (_, events) {
+                  events.success([
+                    {
+                      'type': 'ethernet',
+                      'hasInternet': true,
+                      'downLinkKbps': 100000,
+                      'upLinkKbps': 50000,
+                    },
+                  ]);
+                  events.endOfStream();
+                },
+              ),
+            );
 
         final result = await plugin.onActiveNetworksChanged.first;
 
@@ -177,19 +181,19 @@ void main() {
       test('emits multiple events in order', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockStreamHandler(
-          eventChannel,
-          MockStreamHandler.inline(
-            onListen: (_, events) {
-              events.success([
-                {'type': 'wifi'}
-              ]);
-              events.success([
-                {'type': 'cellular'}
-              ]);
-              events.endOfStream();
-            },
-          ),
-        );
+              eventChannel,
+              MockStreamHandler.inline(
+                onListen: (_, events) {
+                  events.success([
+                    {'type': 'wifi'},
+                  ]);
+                  events.success([
+                    {'type': 'cellular'},
+                  ]);
+                  events.endOfStream();
+                },
+              ),
+            );
 
         final results = await plugin.onActiveNetworksChanged.toList();
 
@@ -201,14 +205,14 @@ void main() {
       test('emits empty list when event data is empty list', () async {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockStreamHandler(
-          eventChannel,
-          MockStreamHandler.inline(
-            onListen: (_, events) {
-              events.success(<dynamic>[]);
-              events.endOfStream();
-            },
-          ),
-        );
+              eventChannel,
+              MockStreamHandler.inline(
+                onListen: (_, events) {
+                  events.success(<dynamic>[]);
+                  events.endOfStream();
+                },
+              ),
+            );
 
         final result = await plugin.onActiveNetworksChanged.first;
         expect(result, isEmpty);
@@ -217,11 +221,11 @@ void main() {
       test('returns a broadcast stream', () {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockStreamHandler(
-          eventChannel,
-          MockStreamHandler.inline(
-            onListen: (_, events) => events.endOfStream(),
-          ),
-        );
+              eventChannel,
+              MockStreamHandler.inline(
+                onListen: (_, events) => events.endOfStream(),
+              ),
+            );
 
         final stream = plugin.onActiveNetworksChanged;
         expect(stream.isBroadcast, isTrue);

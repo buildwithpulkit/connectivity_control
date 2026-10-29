@@ -48,6 +48,8 @@ jobs:
           channel: stable
       - run: flutter pub get
       - run: cd example && flutter build apk
+      # Apps that haven't enabled built-in Kotlin: Flutter applies KGP to the plugin.
+      - run: cd example && flutter build apk --debug -P android.builtInKotlin=false
 
   build-ios:
     runs-on: macos-latest

@@ -2,34 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## About
-
-`connectivity_control` is a Flutter plugin that provides low-level, system-driven visibility into active network interfaces. It exposes two APIs:
-- `getActiveNetworks()` — one-time query returning `List<NetworkInfo>`
-- `onActiveNetworksChanged` — real-time `Stream<List<NetworkInfo>>`
-
-## Commands
-
-```bash
-# Install dependencies
-flutter pub get
-
-# Run all tests
-flutter test
-
-# Run a single test file
-flutter test test/network_info_test.dart
-
-# Run a specific test by name
-flutter test test/network_info_test.dart -n "creates instance with required type only"
-
-# Lint
-flutter analyze
-
-# Format
-flutter format .
-```
-
 ## Architecture
 
 The plugin follows Flutter's **platform interface pattern**:
@@ -42,6 +14,16 @@ The plugin follows Flutter's **platform interface pattern**:
 4. **Models** (`lib/src/core/`) — `NetworkInfo` (data model) and `NetworkType` enum
 
 Android supports all `NetworkInfo` fields. iOS supports all fields except `downLinkKbps`/`upLinkKbps` (no API) and VPN type detection (platform limitation). `ConnectivityControl` is a singleton accessed via `ConnectivityControl()` factory constructor.
+
+## Git workflow
+
+- **Before committing,** create a branch for the work. Don't commit straight to `production`.
+- **Branch name:** `<type>/<short-kebab-title>`, where `<type>` is the Conventional Commits type for the change:
+  - bug fix → `fix/<short-kebab-title>`
+  - new feature → `feat/<short-kebab-title>`
+  - other work uses the closest type: `chore`, `refactor`, `perf`, `docs`, `test`, `ci`. An enhancement that changes behavior is `feat`; a cleanup with no behavior change is `refactor` or `chore`.
+- **Commit message:** Conventional Commits message, e.g. `fix(auth): handle expired session token`.
+- **Releases:** version bumps happen on a dedicated release branch. Feature and fix branches must not change the `version:` in `pubspec.yaml` (or its entry in `example/pubspec.lock`), and must not edit `CHANGELOG.md` or `README.md`.
 
 ## Testing Conventions
 
