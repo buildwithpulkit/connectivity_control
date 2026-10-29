@@ -1,3 +1,14 @@
+## 1.2.0
+
+### Changed
+- **BREAKING (minimum versions)**: Requires Flutter 3.44+ and Dart 3.12+ (previously Flutter 3.3 / Dart 3.0).
+- **Android**: Migrated to built-in Kotlin. The `kotlin-android` plugin and `android.kotlinOptions` are gone; `jvmTarget` is now set via `kotlin.compilerOptions`. Pinned AGP is now 9.1.0 and KGP is 2.4.0.
+- **Android**: Plugin package/namespace renamed to `me.pulkitagarwal.connectivity_control`.
+- iOS/macOS podspec metadata and repository URLs now point to the new project location (`buildwithpulkit/connectivity_control`).
+- CI: added a build check for apps that don't have built-in Kotlin enabled.
+
+---
+
 ## 1.1.0
 
 ### Added
