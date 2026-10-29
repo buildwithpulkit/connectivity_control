@@ -14,5 +14,5 @@ enum NetworkType {
 
   /// Any network type that cannot be classified into
   /// the known categories.
-  other
+  other,
 }

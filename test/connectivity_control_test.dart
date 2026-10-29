@@ -10,8 +10,8 @@ class _MockPlatform extends ConnectivityControlPlatform {
   _MockPlatform({
     List<NetworkInfo>? networks,
     Stream<List<NetworkInfo>>? stream,
-  })  : networks = networks ?? const [],
-        stream = stream ?? const Stream.empty();
+  }) : networks = networks ?? const [],
+       stream = stream ?? const Stream.empty();
 
   @override
   Future<List<NetworkInfo>> getActiveNetworks() async => networks;
@@ -33,8 +33,9 @@ void main() {
         final expected = [
           NetworkInfo(type: NetworkType.wifi, hasInternet: true),
         ];
-        ConnectivityControlPlatform.instance =
-            _MockPlatform(networks: expected);
+        ConnectivityControlPlatform.instance = _MockPlatform(
+          networks: expected,
+        );
 
         final result = await control.getActiveNetworks();
         expect(result, expected);
@@ -53,8 +54,9 @@ void main() {
           NetworkInfo(type: NetworkType.vpn, hasInternet: true),
           NetworkInfo(type: NetworkType.cellular, hasInternet: false),
         ];
-        ConnectivityControlPlatform.instance =
-            _MockPlatform(networks: expected);
+        ConnectivityControlPlatform.instance = _MockPlatform(
+          networks: expected,
+        );
 
         final result = await control.getActiveNetworks();
 
