@@ -23,6 +23,7 @@ Android supports all `NetworkInfo` fields. iOS supports all fields except `downL
   - new feature → `feat/<short-kebab-title>`
   - other work uses the closest type: `chore`, `refactor`, `perf`, `docs`, `test`, `ci`. An enhancement that changes behavior is `feat`; a cleanup with no behavior change is `refactor` or `chore`.
 - **Commit message:** Conventional Commits message, e.g. `fix(auth): handle expired session token`.
+- **Releases:** version bumps happen on a dedicated release branch. Feature and fix branches must not change the `version:` in `pubspec.yaml` (or its entry in `example/pubspec.lock`), and must not edit `CHANGELOG.md` or `README.md`.
 
 ## Testing Conventions
 
