@@ -14,18 +14,85 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Connectivity Control Demo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2563EB),
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-        fontFamily: 'monospace',
-      ),
+      theme: _buildTheme(Brightness.light),
+      darkTheme: _buildTheme(Brightness.dark),
       home: const DemoPage(),
     );
   }
+
+  ThemeData _buildTheme(Brightness brightness) {
+    final palette = _Palette.of(brightness);
+    return ThemeData(
+      useMaterial3: true,
+      brightness: brightness,
+      scaffoldBackgroundColor: palette.background,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: palette.accent,
+        brightness: brightness,
+        surface: palette.surface,
+      ),
+      splashFactory: NoSplash.splashFactory,
+    );
+  }
 }
+
+// ─── Palette ─────────────────────────────────────────────────────────────────
+
+class _Palette {
+  final Color background;
+  final Color surface;
+  final Color border;
+  final Color textPrimary;
+  final Color textSecondary;
+  final Color textTertiary;
+  final Color accent;
+  final Color positive;
+  final Color caution;
+
+  const _Palette({
+    required this.background,
+    required this.surface,
+    required this.border,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.textTertiary,
+    required this.accent,
+    required this.positive,
+    required this.caution,
+  });
+
+  static const _light = _Palette(
+    background: Color(0xFFF6F7F9),
+    surface: Color(0xFFFFFFFF),
+    border: Color(0xFFE6E8EC),
+    textPrimary: Color(0xFF111418),
+    textSecondary: Color(0xFF5F6670),
+    textTertiary: Color(0xFF9AA0A8),
+    accent: Color(0xFF3B6FE0),
+    positive: Color(0xFF2F9E6B),
+    caution: Color(0xFFC98A1B),
+  );
+
+  static const _dark = _Palette(
+    background: Color(0xFF0E1013),
+    surface: Color(0xFF171A1F),
+    border: Color(0xFF262A31),
+    textPrimary: Color(0xFFF2F3F5),
+    textSecondary: Color(0xFFA2A8B1),
+    textTertiary: Color(0xFF6B717A),
+    accent: Color(0xFF7DA2F0),
+    positive: Color(0xFF5BC296),
+    caution: Color(0xFFE0AE55),
+  );
+
+  static _Palette of(Brightness brightness) =>
+      brightness == Brightness.dark ? _dark : _light;
+
+  static _Palette ofContext(BuildContext context) =>
+      of(Theme.of(context).brightness);
+}
+
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 class DemoPage extends StatefulWidget {
   const DemoPage({super.key});
@@ -38,36 +105,34 @@ class _DemoPageState extends State<DemoPage> {
   final _plugin = ConnectivityControl();
   StreamSubscription<List<NetworkInfo>>? _sub;
 
-  // getActiveNetworks state
+  // getActiveNetworks() state; only changes when refreshed.
   List<NetworkInfo>? _snapshotNetworks;
   bool _snapshotLoading = false;
 
-  // onActiveNetworksChanged state
-  List<NetworkInfo> _liveNetworks = [];
+  // onActiveNetworksChanged state; null until the first event arrives.
+  List<NetworkInfo>? _liveNetworks;
 
   @override
   void initState() {
     super.initState();
     _fetchSnapshot();
-    _startListening();
+    _sub = _plugin.onActiveNetworksChanged.listen((networks) {
+      if (mounted) setState(() => _liveNetworks = networks);
+    });
   }
 
   Future<void> _fetchSnapshot() async {
     setState(() => _snapshotLoading = true);
+    List<NetworkInfo> networks;
     try {
-      final networks = await _plugin.getActiveNetworks();
-      setState(() {
-        _snapshotNetworks = networks;
-        _snapshotLoading = false;
-      });
+      networks = await _plugin.getActiveNetworks();
     } catch (_) {
-      setState(() => _snapshotLoading = false);
+      networks = _snapshotNetworks ?? const [];
     }
-  }
-
-  void _startListening() {
-    _sub = _plugin.onActiveNetworksChanged.listen((networks) {
-      setState(() => _liveNetworks = networks);
+    if (!mounted) return;
+    setState(() {
+      _snapshotNetworks = networks;
+      _snapshotLoading = false;
     });
   }
 
@@ -79,324 +144,517 @@ class _DemoPageState extends State<DemoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final palette = _Palette.ofContext(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1E293B),
-        title: const Text(
-          'connectivity_control',
-          style: TextStyle(
-            fontFamily: 'monospace',
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: false,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _SectionCard(
-            label: 'getActiveNetworks()',
-            labelColor: const Color(0xFF34D399),
-            trailing: IconButton(
-              onPressed: _snapshotLoading ? null : _fetchSnapshot,
-              icon: _snapshotLoading
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Color(0xFF34D399),
-                      ),
-                    )
-                  : const Icon(Icons.refresh_rounded, color: Color(0xFF34D399)),
-              tooltip: 'Refresh',
-            ),
-            child: _snapshotNetworks == null
-                ? const _EmptyHint(text: 'Fetching…')
-                : _snapshotNetworks!.isEmpty
-                ? const _EmptyHint(text: 'No active networks found')
-                : Column(
-                    children: _snapshotNetworks!
-                        .map((n) => _NetworkCard(info: n))
-                        .toList(),
-                  ),
-          ),
-          const SizedBox(height: 16),
-          _SectionCard(
-            label: 'onActiveNetworksChanged',
-            labelColor: const Color(0xFF818CF8),
-            trailing: _LiveDot(active: _sub != null),
-            child: _liveNetworks.isEmpty
-                ? const _EmptyHint(text: 'Waiting for network changes…')
-                : Column(
-                    children: _liveNetworks
-                        .map((n) => _NetworkCard(info: n))
-                        .toList(),
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Section wrapper ─────────────────────────────────────────────────────────
-
-class _SectionCard extends StatelessWidget {
-  final String label;
-  final Color labelColor;
-  final Widget child;
-  final Widget? trailing;
-
-  const _SectionCard({
-    required this.label,
-    required this.labelColor,
-    required this.child,
-    this.trailing,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF334155)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 8, 0),
-            child: Row(
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: labelColor,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                const Spacer(),
-                ?trailing,
-              ],
-            ),
-          ),
-          const Divider(color: Color(0xFF334155), height: 20),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
-            child: child,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Network card ─────────────────────────────────────────────────────────────
-
-class _NetworkCard extends StatelessWidget {
-  final NetworkInfo info;
-
-  const _NetworkCard({required this.info});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFF334155)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: _fetchSnapshot,
+          color: palette.accent,
+          backgroundColor: palette.surface,
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
             children: [
-              _TypeIcon(type: info.type),
-              const SizedBox(width: 8),
-              Text(
-                info.type.name.toUpperCase(),
-                style: const TextStyle(
-                  fontFamily: 'monospace',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: Colors.white,
-                  letterSpacing: 1.2,
+              _Header(count: (_liveNetworks ?? _snapshotNetworks)?.length),
+              const SizedBox(height: 28),
+              _SectionHeader(
+                title: 'getActiveNetworks()',
+                caption: 'Snapshot at the time of the call',
+                trailing: _RefreshButton(
+                  loading: _snapshotLoading,
+                  onPressed: _fetchSnapshot,
                 ),
+              ),
+              const SizedBox(height: 12),
+              _NetworkList(
+                networks: _snapshotNetworks,
+                pendingText: 'Reading network state…',
+              ),
+              const SizedBox(height: 28),
+              const _SectionHeader(
+                title: 'onActiveNetworksChanged',
+                caption: 'Updates as soon as the system reports a change',
+                trailing: _LiveBadge(),
+              ),
+              const SizedBox(height: 12),
+              _NetworkList(
+                networks: _liveNetworks,
+                pendingText: 'Waiting for the first update…',
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              _BoolChip(label: 'internet', value: info.hasInternet),
-              _BoolChip(label: 'validated', value: info.isValidated),
-              _BoolChip(label: 'metered', value: info.isMetered),
-            ],
-          ),
-          if (info.downLinkKbps != null || info.upLinkKbps != null) ...[
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                if (info.downLinkKbps != null)
-                  _BandwidthPill(
-                    icon: Icons.arrow_downward_rounded,
-                    color: const Color(0xFF34D399),
-                    value: info.downLinkKbps!,
-                  ),
-                if (info.downLinkKbps != null && info.upLinkKbps != null)
-                  const SizedBox(width: 8),
-                if (info.upLinkKbps != null)
-                  _BandwidthPill(
-                    icon: Icons.arrow_upward_rounded,
-                    color: const Color(0xFFF472B6),
-                    value: info.upLinkKbps!,
-                  ),
-              ],
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }
 }
 
-// ─── Type icon ────────────────────────────────────────────────────────────────
+// ─── Header ──────────────────────────────────────────────────────────────────
 
-class _TypeIcon extends StatelessWidget {
-  final NetworkType type;
+class _Header extends StatelessWidget {
+  final int? count;
 
-  const _TypeIcon({required this.type});
+  const _Header({required this.count});
 
   @override
   Widget build(BuildContext context) {
-    final (icon, color) = switch (type) {
-      NetworkType.wifi => (Icons.wifi_rounded, const Color(0xFF60A5FA)),
-      NetworkType.cellular => (
-        Icons.signal_cellular_alt_rounded,
-        const Color(0xFFFBBF24),
-      ),
-      NetworkType.vpn => (Icons.vpn_lock_rounded, const Color(0xFFA78BFA)),
-      NetworkType.ethernet => (Icons.cable_rounded, const Color(0xFF34D399)),
-      NetworkType.other => (Icons.device_hub_rounded, const Color(0xFF94A3B8)),
+    final palette = _Palette.ofContext(context);
+    final status = switch (count) {
+      null => 'Reading network state',
+      1 => '1 active network',
+      final n => '$n active networks',
     };
-    return Icon(icon, color: color, size: 20);
-  }
-}
 
-// ─── Bool chip ────────────────────────────────────────────────────────────────
-
-class _BoolChip extends StatelessWidget {
-  final String label;
-  final bool? value;
-
-  const _BoolChip({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    final (bg, fg, icon) = value == null
-        ? (const Color(0xFF1E293B), const Color(0xFF64748B), Icons.remove)
-        : value!
-        ? (
-            const Color(0xFF14532D),
-            const Color(0xFF86EFAC),
-            Icons.check_rounded,
-          )
-        : (
-            const Color(0xFF450A0A),
-            const Color(0xFFFCA5A5),
-            Icons.close_rounded,
-          );
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: fg.withAlpha(80)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: fg),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(fontSize: 11, color: fg, fontFamily: 'monospace'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Bandwidth pill ───────────────────────────────────────────────────────────
-
-class _BandwidthPill extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final int value;
-
-  const _BandwidthPill({
-    required this.icon,
-    required this.color,
-    required this.value,
-  });
-
-  String get _formatted {
-    if (value >= 1000) return '${(value / 1000).toStringAsFixed(1)} Mbps';
-    return '$value Kbps';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 13, color: color),
-        const SizedBox(width: 3),
         Text(
-          _formatted,
-          style: TextStyle(fontSize: 12, color: color, fontFamily: 'monospace'),
+          'connectivity_control',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: palette.textTertiary,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          'Networks',
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.6,
+            color: palette.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: Text(
+            status,
+            key: ValueKey(status),
+            style: TextStyle(fontSize: 14, color: palette.textSecondary),
+          ),
         ),
       ],
     );
   }
 }
 
-// ─── Live dot ────────────────────────────────────────────────────────────────
+// ─── Section header ──────────────────────────────────────────────────────────
 
-class _LiveDot extends StatefulWidget {
-  final bool active;
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String caption;
+  final Widget trailing;
 
-  const _LiveDot({required this.active});
+  const _SectionHeader({
+    required this.title,
+    required this.caption,
+    required this.trailing,
+  });
 
   @override
-  State<_LiveDot> createState() => _LiveDotState();
+  Widget build(BuildContext context) {
+    final palette = _Palette.ofContext(context);
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: palette.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                caption,
+                style: TextStyle(fontSize: 12, color: palette.textTertiary),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        trailing,
+      ],
+    );
+  }
 }
 
-class _LiveDotState extends State<_LiveDot>
+class _RefreshButton extends StatelessWidget {
+  final bool loading;
+  final VoidCallback onPressed;
+
+  const _RefreshButton({required this.loading, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = _Palette.ofContext(context);
+    return TextButton.icon(
+      onPressed: loading ? null : onPressed,
+      style: TextButton.styleFrom(
+        foregroundColor: palette.accent,
+        disabledForegroundColor: palette.textTertiary,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+      ),
+      icon: loading
+          ? SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: palette.textTertiary,
+              ),
+            )
+          : const Icon(Icons.refresh_rounded, size: 16),
+      label: const Text('Refresh'),
+    );
+  }
+}
+
+class _LiveBadge extends StatelessWidget {
+  const _LiveBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = _Palette.ofContext(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _PulseDot(color: palette.positive),
+          const SizedBox(width: 6),
+          Text(
+            'Live',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: palette.positive,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Network list ────────────────────────────────────────────────────────────
+
+class _NetworkList extends StatelessWidget {
+  final List<NetworkInfo>? networks;
+  final String pendingText;
+
+  const _NetworkList({required this.networks, required this.pendingText});
+
+  @override
+  Widget build(BuildContext context) {
+    final networks = this.networks;
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutCubic,
+      alignment: Alignment.topCenter,
+      child: networks == null
+          ? _EmptyState(icon: Icons.more_horiz_rounded, text: pendingText)
+          : networks.isEmpty
+          ? const _EmptyState(
+              icon: Icons.cloud_off_rounded,
+              text: 'No active networks',
+            )
+          : Column(
+              children: [
+                for (final n in networks)
+                  _NetworkCard(key: ValueKey(n.type), info: n),
+              ],
+            ),
+    );
+  }
+}
+
+// ─── Surface ─────────────────────────────────────────────────────────────────
+
+class _Surface extends StatelessWidget {
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+
+  const _Surface({
+    required this.child,
+    this.padding = const EdgeInsets.all(16),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = _Palette.ofContext(context);
+    return Container(
+      width: double.infinity,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: palette.border),
+      ),
+      child: child,
+    );
+  }
+}
+
+// ─── Network card ────────────────────────────────────────────────────────────
+
+class _NetworkCard extends StatelessWidget {
+  final NetworkInfo info;
+
+  const _NetworkCard({super.key, required this.info});
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = _Palette.ofContext(context);
+    final hasBandwidth = info.downLinkKbps != null || info.upLinkKbps != null;
+
+    return _FadeIn(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: _Surface(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: palette.accent.withAlpha(26),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      _icon(info.type),
+                      size: 20,
+                      color: palette.accent,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _label(info.type),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: palette.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _summary(info),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: palette.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _StatusBadge(online: info.hasInternet == true),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Divider(height: 1, thickness: 1, color: palette.border),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  _Metric(label: 'Internet', value: _yesNo(info.hasInternet)),
+                  _Metric(label: 'Validated', value: _yesNo(info.isValidated)),
+                  _Metric(label: 'Metered', value: _yesNo(info.isMetered)),
+                ],
+              ),
+              if (hasBandwidth) ...[
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    _Metric(
+                      label: 'Downlink',
+                      value: _formatKbps(info.downLinkKbps),
+                    ),
+                    _Metric(
+                      label: 'Uplink',
+                      value: _formatKbps(info.upLinkKbps),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static String _summary(NetworkInfo info) {
+    final parts = [
+      if (info.isValidated == true)
+        'Validated'
+      else if (info.isValidated == false)
+        'Not validated',
+      if (info.isMetered == true)
+        'Metered'
+      else if (info.isMetered == false)
+        'Unmetered',
+    ];
+    return parts.isEmpty ? 'Active' : parts.join(' · ');
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  final bool online;
+
+  const _StatusBadge({required this.online});
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = _Palette.ofContext(context);
+    final color = online ? palette.positive : palette.caution;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withAlpha(26),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            online ? 'Online' : 'No internet',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Metric extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _Metric({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = _Palette.ofContext(context);
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontSize: 12, color: palette.textTertiary),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: palette.textPrimary,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Empty state ─────────────────────────────────────────────────────────────
+
+class _EmptyState extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _EmptyState({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = _Palette.ofContext(context);
+    return _Surface(
+      padding: const EdgeInsets.symmetric(vertical: 28),
+      child: Column(
+        children: [
+          Icon(icon, size: 22, color: palette.textTertiary),
+          const SizedBox(height: 8),
+          Text(
+            text,
+            style: TextStyle(fontSize: 14, color: palette.textSecondary),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Motion ──────────────────────────────────────────────────────────────────
+
+/// Fades and slightly lifts its child the first time it is built.
+class _FadeIn extends StatelessWidget {
+  final Widget child;
+
+  const _FadeIn({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOutCubic,
+      child: child,
+      builder: (context, t, child) => Opacity(
+        opacity: t,
+        child: Transform.translate(
+          offset: Offset(0, (1 - t) * 8),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+class _PulseDot extends StatefulWidget {
+  final Color color;
+
+  const _PulseDot({required this.color});
+
+  @override
+  State<_PulseDot> createState() => _PulseDotState();
+}
+
+class _PulseDotState extends State<_PulseDot>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 900),
-  )..repeat(reverse: true);
-
-  late final Animation<double> _opacity = Tween(
-    begin: 0.3,
-    end: 1.0,
-  ).animate(_controller);
+    duration: const Duration(milliseconds: 1600),
+  )..repeat();
 
   @override
   void dispose() {
@@ -406,58 +664,66 @@ class _LiveDotState extends State<_LiveDot>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.active) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(right: 12),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FadeTransition(
-            opacity: _opacity,
-            child: Container(
-              width: 8,
-              height: 8,
-              decoration: const BoxDecoration(
-                color: Color(0xFF818CF8),
-                shape: BoxShape.circle,
+    return SizedBox(
+      width: 14,
+      height: 14,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          final t = Curves.easeOut.transform(_controller.value);
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: 6 + 8 * t,
+                height: 6 + 8 * t,
+                decoration: BoxDecoration(
+                  color: widget.color.withAlpha((90 * (1 - t)).round()),
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
-          ),
-          const SizedBox(width: 5),
-          const Text(
-            'LIVE',
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF818CF8),
-              letterSpacing: 1.2,
-            ),
-          ),
-        ],
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: widget.color,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Formatting ──────────────────────────────────────────────────────────────
 
-class _EmptyHint extends StatelessWidget {
-  final String text;
+String _label(NetworkType type) => switch (type) {
+  NetworkType.wifi => 'Wi-Fi',
+  NetworkType.cellular => 'Cellular',
+  NetworkType.vpn => 'VPN',
+  NetworkType.ethernet => 'Ethernet',
+  NetworkType.other => 'Other',
+};
 
-  const _EmptyHint({required this.text});
+IconData _icon(NetworkType type) => switch (type) {
+  NetworkType.wifi => Icons.wifi_rounded,
+  NetworkType.cellular => Icons.signal_cellular_alt_rounded,
+  NetworkType.vpn => Icons.lock_outline_rounded,
+  NetworkType.ethernet => Icons.settings_ethernet_rounded,
+  NetworkType.other => Icons.lan_outlined,
+};
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 12,
-          color: Color(0xFF64748B),
-          fontFamily: 'monospace',
-        ),
-      ),
-    );
-  }
+String _yesNo(bool? value) => switch (value) {
+  true => 'Yes',
+  false => 'No',
+  null => '—',
+};
+
+String _formatKbps(int? kbps) {
+  if (kbps == null) return '—';
+  if (kbps >= 1000) return '${(kbps / 1000).toStringAsFixed(1)} Mbps';
+  return '$kbps Kbps';
 }
