@@ -1,0 +1,38 @@
+# pub reads this file instead of .gitignore for this directory, so the
+# .gitignore rules below must stay in sync with .gitignore.
+
+# Repo-only files: kept in git, not shipped in the published package.
+/CLAUDE.md
+/assets/
+/doc/
+
+# ---- Copied from .gitignore ----
+
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Flutter/Dart/Pub related
+/pubspec.lock
+**/doc/api/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+coverage/
