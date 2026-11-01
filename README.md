@@ -30,10 +30,23 @@ Unlike basic connectivity checks, this plugin is designed to help apps **underst
 
 Captured from the [example app](example/lib/main.dart) on Android.
 
-| Wi-Fi | Wi-Fi switched off | Dark mode |
-|:---:|:---:|:---:|
-| <img src="https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/readme/networks_light.png" width="200" alt="Wi-Fi network: internet, validated, unmetered, with bandwidth estimates"> | <img src="https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/readme/wifi_off_split_light.png" width="200" alt="Snapshot still shows Wi-Fi while the live stream already shows Cellular, metered and not validated"> | <img src="https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/readme/networks_dark.png" width="200" alt="Example app in dark mode"> |
-| Validated, unmetered, with bandwidth estimates | Live stream moves to Cellular (metered); the snapshot waits for a refresh | Follows the system theme |
+<table>
+  <tr>
+    <th width="33%">Wi-Fi</th>
+    <th width="33%">Wi-Fi switched off</th>
+    <th width="33%">Dark mode</th>
+  </tr>
+  <tr>
+    <td width="33%" align="center"><img src="https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/readme/networks_light.png" width="200" alt="Wi-Fi network: internet, validated, unmetered, with bandwidth estimates"></td>
+    <td width="33%" align="center"><img src="https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/readme/wifi_off_split_light.png" width="200" alt="Snapshot still shows Wi-Fi while the live stream already shows Cellular, metered and not validated"></td>
+    <td width="33%" align="center"><img src="https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/readme/networks_dark.png" width="200" alt="Example app in dark mode"></td>
+  </tr>
+  <tr>
+    <td align="center">Validated, unmetered, with bandwidth estimates</td>
+    <td align="center">Live stream moves to Cellular (metered); the snapshot waits for a refresh</td>
+    <td align="center">Follows the system theme</td>
+  </tr>
+</table>
 
 ---
 
