@@ -4,7 +4,11 @@ A Flutter plugin that provides **low-level, system-driven visibility into active
 
 Unlike basic connectivity checks, this plugin is designed to help apps **understand, observe, and reason about multiple simultaneous networks** (Wi-Fi, cellular, VPN, etc.) using native platform signals.
 
-[▶ Watch the demo](https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/example_app_demo.mp4)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/readme/demo.gif" width="300" alt="Example app: turning Wi-Fi off moves the live stream to Cellular (metered) while the getActiveNetworks() snapshot stays on Wi-Fi until refreshed">
+</p>
+
+<p align="center"><sub>Turning Wi-Fi off and on. <code>onActiveNetworksChanged</code> updates instantly; <code>getActiveNetworks()</code> updates on refresh.</sub></p>
 
 ---
 
@@ -19,6 +23,17 @@ Unlike basic connectivity checks, this plugin is designed to help apps **underst
 - Retrieve **upstream and downstream bandwidth estimates** (Android only)
 - Listen to **real-time network changes** via streams
 - Native, event-driven implementation (no polling)
+
+---
+
+## Screenshots
+
+Captured from the [example app](example/lib/main.dart) on Android.
+
+| Wi-Fi | Wi-Fi switched off | Dark mode |
+|:---:|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/readme/networks_light.png" width="200" alt="Wi-Fi network: internet, validated, unmetered, with bandwidth estimates"> | <img src="https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/readme/wifi_off_split_light.png" width="200" alt="Snapshot still shows Wi-Fi while the live stream already shows Cellular, metered and not validated"> | <img src="https://raw.githubusercontent.com/buildwithpulkit/connectivity_control/production/assets/readme/networks_dark.png" width="200" alt="Example app in dark mode"> |
+| Validated, unmetered, with bandwidth estimates | Live stream moves to Cellular (metered); the snapshot waits for a refresh | Follows the system theme |
 
 ---
 
