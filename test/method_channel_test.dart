@@ -62,6 +62,7 @@ void main() {
                   'hasInternet': true,
                   'isValidated': true,
                   'isMetered': false,
+                  'isTemporarilyUnmetered': false,
                   'downLinkKbps': 5000,
                   'upLinkKbps': 1000,
                 },
@@ -75,6 +76,7 @@ void main() {
         expect(result.first.hasInternet, isTrue);
         expect(result.first.isValidated, isTrue);
         expect(result.first.isMetered, isFalse);
+        expect(result.first.isTemporarilyUnmetered, isFalse);
         expect(result.first.downLinkKbps, 5000);
         expect(result.first.upLinkKbps, 1000);
       });
@@ -114,6 +116,7 @@ void main() {
         expect(result.first.hasInternet, isNull);
         expect(result.first.isValidated, isNull);
         expect(result.first.isMetered, isNull);
+        expect(result.first.isTemporarilyUnmetered, isNull);
         expect(result.first.downLinkKbps, isNull);
         expect(result.first.upLinkKbps, isNull);
       });

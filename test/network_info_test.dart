@@ -12,6 +12,7 @@ void main() {
         expect(info.hasInternet, isNull);
         expect(info.isValidated, isNull);
         expect(info.isMetered, isNull);
+        expect(info.isTemporarilyUnmetered, isNull);
         expect(info.downLinkKbps, isNull);
         expect(info.upLinkKbps, isNull);
       });
@@ -22,6 +23,7 @@ void main() {
           hasInternet: true,
           isValidated: true,
           isMetered: false,
+          isTemporarilyUnmetered: false,
           downLinkKbps: 1000,
           upLinkKbps: 500,
         );
@@ -30,6 +32,7 @@ void main() {
         expect(info.hasInternet, isTrue);
         expect(info.isValidated, isTrue);
         expect(info.isMetered, isFalse);
+        expect(info.isTemporarilyUnmetered, isFalse);
         expect(info.downLinkKbps, 1000);
         expect(info.upLinkKbps, 500);
       });
@@ -49,6 +52,7 @@ void main() {
           'hasInternet': true,
           'isValidated': true,
           'isMetered': false,
+          'isTemporarilyUnmetered': false,
           'downLinkKbps': 2000,
           'upLinkKbps': 800,
         });
@@ -57,6 +61,7 @@ void main() {
         expect(info.hasInternet, isTrue);
         expect(info.isValidated, isTrue);
         expect(info.isMetered, isFalse);
+        expect(info.isTemporarilyUnmetered, isFalse);
         expect(info.downLinkKbps, 2000);
         expect(info.upLinkKbps, 800);
       });
@@ -102,6 +107,7 @@ void main() {
         expect(info.hasInternet, isNull);
         expect(info.isValidated, isNull);
         expect(info.isMetered, isNull);
+        expect(info.isTemporarilyUnmetered, isNull);
         expect(info.downLinkKbps, isNull);
         expect(info.upLinkKbps, isNull);
       });
@@ -117,6 +123,17 @@ void main() {
         expect(info.hasInternet, isFalse);
         expect(info.isValidated, isFalse);
         expect(info.isMetered, isTrue);
+      });
+
+      test('parses a temporarily unmetered network', () {
+        final info = NetworkInfo.fromMap({
+          'type': 'cellular',
+          'isMetered': true,
+          'isTemporarilyUnmetered': true,
+        });
+
+        expect(info.isMetered, isTrue);
+        expect(info.isTemporarilyUnmetered, isTrue);
       });
 
       test('handles zero bandwidth values', () {
@@ -162,6 +179,7 @@ void main() {
           hasInternet: true,
           isValidated: false,
           isMetered: true,
+          isTemporarilyUnmetered: true,
           downLinkKbps: 100,
           upLinkKbps: 50,
         );
@@ -170,6 +188,7 @@ void main() {
         expect(result, contains('hasInternet: true'));
         expect(result, contains('isValidated: false'));
         expect(result, contains('isMetered: true'));
+        expect(result, contains('isTemporarilyUnmetered: true'));
         expect(result, contains('downLinkKbps: 100'));
         expect(result, contains('upLinkKbps: 50'));
       });
@@ -181,6 +200,7 @@ void main() {
         expect(result, contains('hasInternet: null'));
         expect(result, contains('isValidated: null'));
         expect(result, contains('isMetered: null'));
+        expect(result, contains('isTemporarilyUnmetered: null'));
         expect(result, contains('downLinkKbps: null'));
         expect(result, contains('upLinkKbps: null'));
       });

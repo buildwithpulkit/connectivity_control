@@ -34,6 +34,7 @@ final class NetworkInformationMapper {
             "hasInternet": path.status == .satisfied,
             "isValidated": path.status == .satisfied,
             "isMetered": path.isExpensive,
+            "isTemporarilyUnmetered": nil,
             "downLinkKbps": nil,
             "upLinkKbps": nil
         ]

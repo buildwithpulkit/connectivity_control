@@ -26,6 +26,7 @@ object NetworkInformationMapper {
             "hasInternet" to NetworkUtils.hasInternet(cap),
             "isValidated" to NetworkUtils.isValidated(cap),
             "isMetered" to NetworkUtils.isMetered(cap),
+            "isTemporarilyUnmetered" to NetworkUtils.isTemporarilyUnmetered(cap),
             "downLinkKbps" to cap.linkDownstreamBandwidthKbps,
             "upLinkKbps" to cap.linkUpstreamBandwidthKbps
         )
