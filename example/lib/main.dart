@@ -506,7 +506,9 @@ class _NetworkCard extends StatelessWidget {
         'Validated'
       else if (info.isValidated == false)
         'Not validated',
-      if (info.isMetered == true)
+      if (info.isTemporarilyUnmetered == true)
+        'Temporarily unmetered'
+      else if (info.isMetered == true)
         'Metered'
       else if (info.isMetered == false)
         'Unmetered',

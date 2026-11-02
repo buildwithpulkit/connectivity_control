@@ -22,6 +22,18 @@ class NetworkInfo {
   /// cautiously for large transfers.
   final bool? isMetered;
 
+  /// Whether a normally metered network is currently unmetered, for
+  /// example an unlimited 5G plan while the device is on 5G.
+  ///
+  /// The carrier sets this and can change it at any time without the
+  /// network reconnecting, so listen to the stream rather than reading it
+  /// once. While it is `true`, [isMetered] stays `true`, matching how
+  /// Android itself classifies the network.
+  ///
+  /// Reported on Android only (API 30+, and some API 29 devices); `null`
+  /// on iOS.
+  final bool? isTemporarilyUnmetered;
+
   /// Estimated downstream bandwidth in kilobits per second (Kbps).
   ///
   /// This value is platform-reported and may be approximate.
@@ -42,6 +54,7 @@ class NetworkInfo {
     this.hasInternet,
     this.isValidated,
     this.isMetered,
+    this.isTemporarilyUnmetered,
     this.downLinkKbps,
     this.upLinkKbps,
   });
@@ -60,6 +73,7 @@ class NetworkInfo {
       hasInternet: map["hasInternet"] as bool?,
       isValidated: map["isValidated"] as bool?,
       isMetered: map["isMetered"] as bool?,
+      isTemporarilyUnmetered: map["isTemporarilyUnmetered"] as bool?,
       downLinkKbps: map["downLinkKbps"] as int?,
       upLinkKbps: map["upLinkKbps"] as int?,
     );
@@ -72,6 +86,7 @@ class NetworkInfo {
         'hasInternet: $hasInternet, '
         'isValidated: $isValidated, '
         'isMetered: $isMetered, '
+        'isTemporarilyUnmetered: $isTemporarilyUnmetered, '
         'downLinkKbps: $downLinkKbps, '
         'upLinkKbps: $upLinkKbps'
         ')';
